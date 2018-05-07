@@ -1,0 +1,14 @@
+<!-- 分页模板 -->
+<nav aria-label="...">
+    <ul class="pager">
+        {% if page==1 %}
+        {% else %}
+        <li><a href="{{url}}?page={{page - 1}}">上一页</a></li>
+        {% endif%}
+        <li>一共有{{count}}条记录，每页显示{{limit}}条记录，总共有{{pages}}页，现在是第{{page}}页 </li>
+        {% if page== pages %}
+        {% else %}
+        <li><a href="{{url}}?page={{page + 1}}">下一页</a></li>
+        {% endif%}
+    </ul>
+</nav>

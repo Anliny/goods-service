@@ -1,0 +1,48 @@
+<!-- 继承模板 -->
+{% extends 'layout.html' %}
+
+<!-- 占位模板的内容 -->
+{%block main%}
+
+    <!--路径导航-->
+    <ol class="breadcrumb">
+        <li><a href="/admin">管理首页</a></li>
+        <li class="active">用户信息</li>
+    </ol>
+
+    <!-- 表格 -->
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>用户ID</th>
+                <th>用户姓名</th>
+                <th>用户密码</th>
+                <th>角色信息</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{user._id.toString()}}</td>
+                    <td>{{user.username}}</td>
+                    <td>{{user.password}}</td>
+                    <td>
+                        {% if user.isAdmin %}
+                            管理员
+                        {% else %}
+                            普通用户
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/admin/">修改</a>&nbsp;&nbsp;
+                        <a href="/admin/user/delete?id={{user._id.toString()}}">删除</a>
+                    </td>
+                </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+    <!-- 引入模板 -->
+    {% include 'pager.html' %}
+
+{%endblock%}

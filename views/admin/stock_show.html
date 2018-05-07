@@ -1,0 +1,97 @@
+<!-- 继承模板 -->
+{% extends 'layout.html' %}
+
+<!-- 占位模板的内容 -->
+{%block main%}
+
+    <!--路径导航-->
+    <ol class="breadcrumb">
+        <li><a href="/admin">管理首页</a></li>
+        <li class="active">{{stockInfo.goodsName}}-材料详细</li>
+    </ol>
+
+    <!-- 表格 -->
+    <style>
+        .bs-callout{
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #eee;
+            border-left-width: 5px;
+            border-radius: 3px;
+        }
+    </style>
+    <div class="bs-callout bs-callout-info" id="callout-navs-tabs-plugin" style="border-left-color: #1b809e;">
+        <h4 style="color: #1b809e;">商品信息</h4>
+        <p class="row">
+            <span class="col-sm-4"> 进货渠道名称：{{stockInfo.providerName}}</span>
+            <span class="col-sm-4"> 商品名称：{{stockInfo.goodsName}}</span>
+            <span class="col-sm-4"> 创建时间：{{stockInfo.updateTime | date('Y-m-d H:i:s', -480, 'CCT')}}</span>
+        </p>
+    </div>
+    <div class="bs-callout bs-callout-info"  style="border-left-color: #1b809e;">
+        <h4 style="color: #1b809e;">价格信息</h4>
+        <p class="row">
+            <span class="col-sm-4"> 商品数量：{{stockInfo.goodsNumber}}件</span>
+            <span class="col-sm-4"> 单价：¥{{stockInfo.price}}元</span>
+            <span class="col-sm-4"> 总价：¥{{stockInfo.totalPrice}}元</span>
+        </p>
+    </div>
+    <div class="bs-callout bs-callout-info"  style="border-left-color: #1b809e;">
+        <h4 style="color: #1b809e;">证单信息</h4>
+        <p class="row">
+            <span class="col-sm-4"> 证单号：{{stockInfo.identifyNumber}}</span>
+            <span class="col-sm-4"> 是否入库：
+                {% if stockInfo.isState %}
+                    <i style="color:green">已入库</i>
+                {% else %}
+                    <i style="color:red">未入库</i>
+                {% endif %}
+            </span>
+            <span class="col-sm-4"> 入库时间：{{stockInfo.createTime | date('Y-m-d H:i:s', -480, 'CCT')}}</span>
+        </p>
+    </div>
+    <div class="bs-callout bs-callout-info"  style="border-left-color: #1b809e;">
+        <h4 style="color: #1b809e;">备注信息</h4>
+        <p class="row">
+            <span class="col-sm-12">{{stockInfo.remark}}</span>
+        </p>
+    </div>
+    <a type="button" href="/stock/saveStock?id={{stockInfo._id.toString()}}" id="btn" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="请确保商品到货才能入库！">商品入库</a>
+
+    <!--<div class="modal fade" id="myModal" tabindex="-1" role="dialog">-->
+        <!--<div class="modal-dialog" role="document">-->
+            <!--<div class="modal-content">-->
+                <!--<div class="modal-header">-->
+                    <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+                    <!--<h4 class="modal-title">确认提示</h4>-->
+                <!--</div>-->
+                <!--<div class="modal-body">-->
+                    <!--<p style="margin: 0;">请务必确保商品到货，才能添加入库 {{stockInfo._id.toString()}}</p>-->
+                <!--</div>-->
+                <!--<div class="modal-footer">-->
+                    <!--<button type="button" class="btn btn-default" data-dismiss="modal">货没到，暂时不入库</button>-->
+                    <!--<button type="button" id="save" class="btn btn-primary" _id="{{stockInfo._id.toString()}}">货已到，现在入库</button>-->
+                <!--</div>-->
+            <!--</div>&lt;!&ndash; /.modal-content &ndash;&gt;-->
+        <!--</div>&lt;!&ndash; /.modal-dialog &ndash;&gt;-->
+    <!--</div>-->
+    <!--<style>-->
+        <!--.modal-footer{-->
+            <!--margin-top: 0;-->
+        <!--}-->
+    <!--</style>-->
+    <script>
+        $(function () {
+	        $('[data-toggle="tooltip"]').tooltip()
+//            $("#btn").click(function () {
+//	            $('#myModal').modal('show');
+//            })
+//            $("#save").on("click",function () {
+//            	var id = $(this).attr("_id");
+//            	console.log(id);
+//                $.post("/stock/saveStock",{id:$(this).attr("_id")});
+//            })
+        })
+    </script>
+
+{%endblock%}

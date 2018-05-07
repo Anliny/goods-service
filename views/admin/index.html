@@ -1,0 +1,11 @@
+<!-- 继承模板 -->
+{% extends 'layout.html' %}
+
+<!-- 占位模板的内容 -->
+{%block main%}
+<div class="jumbotron">
+    <h1>Hello, {{ userInfo.username}}管理员!</h1>
+    <p>欢迎来到我的博客管理后台！</p>
+    <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+</div>
+{%endblock%}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图书网站首页</title>
+    <link rel="stylesheet" href="public/css/bootstrap.css">
+
+    <script src="public/js/jquery-1.12.4.min.js"></script>
+    <script src="public/js/bootstrap.min.js"></script>
+    <script src="public/js/index.js"></script>
+    <style>
+        body{padding:20px}
+    </style>
+</head>
+<body>
+    <div id="userRegister">
+        <h3>用户注册</h3>
+        <from>
+            <input type="text" id="userName" value="" /><br/><br/>
+            <input type="password" id="password" value="" /><br/><br/>
+            <input type="password" id="repassword" value="" /><br/><br/>
+            <input type="button" id="regBtn" value="注册" />
+        </from>
+        <span></span>
+    </div>
+
+    <div id="userLogin">
+        <h3>用户登录</h3>
+        <from>
+            <input type="text" id="logUserName" value="" /><br/><br/>
+            <input type="password" id="logPassword" value="" /><br/><br/>
+            <input type="button" id="logBtn" value="登录" />
+        </from>
+        <span></span>
+    </div>
+    {% if userInfo._id %}
+    <div >
+        {% if userInfo.isAdmin %}
+            <h3>恭喜，{{userInfo.username}}管理员登录成功！</h3>
+            <a href='/admin'>登录后台</a>
+        {% else %}
+            <h3>恭喜，{{userInfo.username}}登录成功！</h3>
+        {% endif %}
+        <a href='javascript:;' id="logout">退出</a>
+    </div>
+    {% else %}
+    <div>
+
+        <h3>你还未登录！请<a href='#'>登录</a></h3>
+
+    </div>
+    {% endif %}
+        <script>
+            $(function () {
+
+            	//注册测试接口
+                $("#regBtn").on('click',function () {
+                    $.ajax({
+                        type:"post",
+	                    dataType:"json",
+                        url:"/api/user/register",
+                        data:{
+	                        'username':$("#userName").val(),
+	                        'password':$("#password").val(),
+	                        'repassword':$("#repassword").val(),
+                        },
+                        success:function (result) {
+                            console.log(result);
+                            $("#userRegister ").find("span").html(result.message)
+                        }
+                    });
+                })
+
+                //登录测试接口
+	            $("#logBtn").on('click',function () {
+		            $.ajax({
+			            type:"post",
+			            dataType:"json",
+			            url:"/api/user/login",
+			            data:{
+				            'username':$("#logUserName").val(),
+				            'password':$("#logPassword").val()
+			            },
+			            success:function (result) {
+				            console.log(result);
+//				            $("#userLogin ").find("span").html(result.message);
+//				            $("#userInfo ").html("<h3>恭喜，"+result.userInfo.username+"登录成功！</h3><a href='#'>退出</a>" );
+			                window.location.reload();
+			            }
+		            });
+	            })
+
+                //用户退出
+                $("#logout").click(function () {
+                    $.ajax({
+	                    type:"get",
+	                    url:"/api/user/logout",
+	                    success:function (result) {
+	                    	console.log(result);
+	                    	window.location.reload();
+                        }
+                    });
+                })
+            })
+
+        </script>
+</body>
+</html>

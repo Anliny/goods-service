@@ -1,0 +1,54 @@
+<!-- 继承模板 -->
+{% extends 'layout.html' %}
+
+<!-- 占位模板的内容 -->
+{%block main%}
+    <!--<link href="external/google-code-prettify/prettify.css" rel="stylesheet">-->
+    <!--<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">-->
+    <!--<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet">-->
+    <!--<link href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">-->
+    <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>-->
+    <!--<script src="external/jquery.hotkeys.js"></script>-->
+    <!--<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>-->
+    <!--<script src="external/google-code-prettify/prettify.js"></script>-->
+    <!--<link href="index.css" rel="stylesheet">-->
+    <!--<script src="bootstrap-wysiwyg.js"></script>-->
+
+
+
+    <!--路径导航-->
+    <ol class="breadcrumb">
+        <li><a href="/admin">管理首页</a></li>
+        <li class="active">{{title}}</li>
+    </ol>
+
+    <form method="post" action="/article/add_article">
+        <div class="form-group">
+            <label for="articleName">文章名称</label>
+            <input type="text" class="form-control" name="articleName" value="{{articleInfo.articleName}}" id="articleName" placeholder="请输入文章名称">
+        </div>
+        <div class="form-group">
+            <label for="articleAuthor">文章作者</label>
+            <input type="text" class="form-control" name="articleAuthor" value="{{articleInfo.articleAuthor}}" id="articleAuthor" placeholder="请输入作者名称">
+        </div>
+        <div class="form-group">
+            <label for="articleDescribe">文章描述</label>
+            <input type="text" class="form-control" name="articleDescribe" value="{{articleInfo.articleDescribe}}" id="articleDescribe" placeholder="请输入文章描述">
+        </div>
+        <div class="form-group">
+            <label for="articleContent">文章正文</label>
+            <textarea class="form-control" name="articleContent" rows="3" id="articleContent" placeholder="请输入文章正文">{{articleInfo.articleContent}}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="blog">选择类目</label>
+            <select name="blog" id="blog" class="form-control">
+                <option value="">请选择类</option>
+                {% for blog in blogs %}
+                     <option value="{{blog._id.toString()}}">{{blog.courseName}}</option>
+                {%endfor%}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-default">提交</button>
+    </form>
+
+{%endblock%}
