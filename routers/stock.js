@@ -222,13 +222,12 @@ router.get("/deleteStock",(req,res,next) => {
 });
 
 /**
- *  根据证单号查询
+ *  根据证单号查询和是否入库查询
  * */
 router.get("/identifyQueryStock",(req,res,next) => {
 	var identifyNumber = req.query.identifyNumber;
 	var isState = req.query.isState;
 	var _filter;
-	console.log(identifyNumber,isState);
 	if(isState == '' || isState == undefined){
 		 _filter = {
 			identifyNumber:{"$regex":identifyNumber,$options:"$i"}
