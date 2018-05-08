@@ -1,0 +1,63 @@
+<!-- 继承模板 -->
+{% extends 'layout.html' %}
+
+<!-- 占位模板的内容 -->
+{%block main%}
+
+    <!--路径导航-->
+    <ol class="breadcrumb">
+        <li><a href="/admin">管理首页</a></li>
+        <li class="active">材料列表</li>
+    </ol>
+    <form action="/stock/identifyQueryStock" method="get">
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label for="identifyNumber">输入证单号</label>
+                <input type="text" class="form-control" name="identifyNumber" id="identifyNumber" placeholder="请输入证单号">
+            </div>
+            <div class="form-group col-sm-6">
+                <label >是否入库</label>
+                <select class="form-control" name="isState">
+                    <option value="">请选择</option>
+                    <option value="true">已入库</option>
+                    <option value="false">未入库</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-info">查询</button>
+    </form>
+    <!-- 表格 -->
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>开支人姓名</th>
+                <th>路费</th>
+                <th>伙食费</th>
+                <th>其他费用</th>
+                <th>总价</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for other in otherList %}
+                <tr>
+                    <td>{{other.otherName}}</td>
+                    <td>{{other.travelPrice}}</td>
+                    <td>{{other.foodPrice}}件</td>
+                    <td>¥{{other.otherPrice}}元</td>
+                    <td>¥{{other.totalPrice}}元</td>
+                    <td>{{other.updateTime | date('Y-m-d H:i:s', -480, 'CCT') }}</td>
+                    <td>
+                        <a href="/stock/jumpGoods?id={{stock._id.toString()}}">修改</a> |
+                        <a href="/stock/showStock?id={{stock._id.toString()}}">查看详情</a> |
+                        <a href="/stock/deleteStock?id={{stock._id.toString()}}">删除</a>
+                    </td>
+                </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+    <!-- 引入模板 -->
+    {% include 'pager.html' %}
+
+{%endblock%}

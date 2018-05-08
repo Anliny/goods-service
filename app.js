@@ -70,21 +70,20 @@ app.set('view engine','html');
 //在开发过程中，取消缓存模板缓存
 swig.setDefaults({cache:false})
 
-
-
 /**
  * 根据不同的功能，划分不同的模块
  * admin    后台管理
  * api      接口模块
  * main     普通模块
  * stock    货物提供商
+ * other    其他开支模块
  */
-app.use('/stock',require('./routers/stock'));
-app.use('/article',require('./routers/article'));
-app.use('/admin',require('./routers/admin'));
-app.use('/api',require('./routers/api'));
 app.use('/',require('./routers/main'));
-
+app.use('/api',require('./routers/api'));
+app.use('/admin',require('./routers/admin'));
+app.use('/article',require('./routers/article'));
+app.use('/stock',require('./routers/stock'));
+app.use('/other',require('./routers/other'));
 
 //数据库连接
 mongoose.connect('mongodb://localhost:27017/goods',{useMongoClient:true},function (err) {

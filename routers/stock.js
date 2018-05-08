@@ -276,5 +276,4 @@ router.get("/identifyQueryStock",(req,res,next) => {
 		})
 });
 
-
 module.exports = router;
