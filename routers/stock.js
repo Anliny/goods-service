@@ -143,7 +143,7 @@ router.get("/",(req,res,next) => {
 
 			// 分页 limit(number)  每页显示多少条
 		//  skip(number)    忽略掉数据的条数
-			Stock.find()
+			Stock.find({})
 				.skip(skip)
 				.limit(limit)
 				.then( (stocks) => {
@@ -221,8 +221,61 @@ router.get("/deleteStock",(req,res,next) => {
 		});
 });
 
+/**
+ *  根据证单号查询
+ * */
+router.get("/identifyQueryStock",(req,res,next) => {
+	var identifyNumber = req.query.identifyNumber;
+	var isState = req.query.isState;
+	var _filter;
+	console.log(identifyNumber,isState);
+	if(isState == '' || isState == undefined){
+		 _filter = {
+			identifyNumber:{"$regex":identifyNumber,$options:"$i"}
+		}
+	}else{
+		_filter = {
+			identifyNumber:{"$regex":identifyNumber,$options:"$i"},
+			isState:isState
+		}
+	}
+	//定义当前页的页数，默认为第一页   req.query.page  获取?page 的值
+	var page = Number(req.query.page || 1);
+	var limit = 5;      //每页显示的条数
+	var count=0;    //总记录数
+	var pages = 0 ;
+	var skip = (page-1)*limit;
 
-
+	Stock.count(_filter,  (err, doc) => { // 查询总条数（用于分页）
+		if (err) {
+			console.log(err)
+		} else {
+			count = doc
+			pages = Math.ceil(count/limit);   //计算有多少页
+			page = Math.min(page,pages);      //分页最大数不能超过总页数
+			page = Math.max(page,1);          //最小控制在第一页
+		}
+	})
+	Stock.find(_filter)
+		.limit(limit) // 最多显示10条
+		.sort({'_id': -1}) // 倒序
+		.exec(  (err, doc) => { // 回调
+			if (err) {
+				console.log(err)
+				console.log(1)
+			} else {
+				res.render('admin/stock_list',{
+					userInfo:req.userInfo,
+					stocks:doc,
+					count:count,
+					pages:pages,
+					limit:limit,
+					page:page,
+					url:"/stock"
+				});
+			}
+		})
+});
 
 
 module.exports = router;
