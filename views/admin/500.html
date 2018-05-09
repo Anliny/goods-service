@@ -1,0 +1,16 @@
+<!-- 继承模板 -->
+{% extends 'layout.html' %}
+
+<!-- 占位模板的内容 -->
+{%block main%}
+
+    <!--路径导航-->
+    <ol class="breadcrumb">
+        <li><a href="/admin">管理首页</a></li>
+        <li class="active">404</li>
+    </ol>
+
+    <div>
+        <img style="width: 100%" src="./public/images/500.jpg"/>
+    </div>
+{%endblock%}
