@@ -31,11 +31,21 @@ router.get('/jumpOther', (req,res,next) => {
  *  添加其他开支
  * */
 router.post('/addOther',(req,res,next) => {
+	if(req.body.otherName == '' || req.body.otherName == undefined){
+		res.render("admin/message",{
+			userInfo:req.userInfo,
+			message:"开支人姓名不能为空!",
+			url:"/other/jumpOther",
+			buttom:"跳转至添加开支界面"
+		})
+		return Promise.reject();
+	}
+
 	var other = {
 		otherName:req.body.otherName,
-		travelPrice:req.body.travelPrice,
-		foodPrice:req.body.foodPrice,
-		otherPrice:req.body.otherPrice,
+		travelPrice:req.body.travelPrice || 0,
+		foodPrice:req.body.foodPrice || 0,
+		otherPrice:req.body.otherPrice || 0,
 		remark:req.body.remark
 	}
 	new Other({
@@ -50,9 +60,6 @@ router.post('/addOther',(req,res,next) => {
 		.save()
 		.then((otherInfo) => {
 			if (otherInfo) {
-				console.log("------------------------------");
-				console.log(otherInfo);
-				console.log("------------------------------");
 				res.render("admin/message",{
 					userInfo:req.userInfo,
 					message:"添加成功!",
@@ -73,7 +80,7 @@ router.post('/addOther',(req,res,next) => {
 /**
  *  其他开支列表
  * */
-router.get("/",(res,req,next) => {
+router.get("/",(req,res,next) => {
 	//定义当前页的页数，默认为第一页   req.query.page  获取?page 的值
 	var page = Number(req.query.page || 1);
 	var limit = 5;      //每页显示的条数
@@ -106,6 +113,45 @@ router.get("/",(res,req,next) => {
 				});
 			})
 	})
+})
+
+/**
+ *  删除一条开支
+ * */
+router.get('/deleteOther',(req,res,next) => {
+	var id = req.query.id || '';
+	Other.remove({_id: id})
+		.then(() => {
+			res.render('admin/message', {
+				userInfo: req.userInfo,
+				message: '删除成功',
+				url: '/other',
+				buttom:"跳转至其他开支列表"
+			});
+		});
+})
+
+/**
+ *  查看详情
+ * */
+router.get('/showOther',(req,res,next) => {
+	var id = req.query.id || "";
+	Other.findOne({_id:id})
+		.then((otherInfo) => {
+			if(otherInfo){
+				res.render('admin/other_show', {
+					userInfo: req.userInfo,
+					otherInfo: otherInfo
+				});
+			}else{
+				res.render('adming/message',{
+					userInfo: req.userInfo,
+					message: '该开支信息不存在！',
+					url: '/other',
+					buttom:"跳转至其他开支列表"
+				})
+			}
+		})
 })
 
 module.exports = router;
