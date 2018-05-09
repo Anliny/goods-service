@@ -43,15 +43,15 @@
             {% for other in otherList %}
                 <tr>
                     <td>{{other.otherName}}</td>
-                    <td>{{other.travelPrice}}</td>
-                    <td>{{other.foodPrice}}件</td>
+                    <td>¥{{other.travelPrice}}元</td>
+                    <td>¥{{other.foodPrice}}元</td>
                     <td>¥{{other.otherPrice}}元</td>
                     <td>¥{{other.totalPrice}}元</td>
                     <td>{{other.updateTime | date('Y-m-d H:i:s', -480, 'CCT') }}</td>
                     <td>
-                        <a href="/stock/jumpGoods?id={{stock._id.toString()}}">修改</a> |
-                        <a href="/stock/showStock?id={{stock._id.toString()}}">查看详情</a> |
-                        <a href="/stock/deleteStock?id={{stock._id.toString()}}">删除</a>
+                        <a href="/other/jumpOther?id={{other._id.toString()}}">修改</a> |
+                        <a href="/other/showOther?id={{other._id.toString()}}">查看详情</a> |
+                        <a href="/other/deleteOther?id={{other._id.toString()}}">删除</a>
                     </td>
                 </tr>
             {%endfor%}
