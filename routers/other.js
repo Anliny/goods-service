@@ -22,13 +22,29 @@ router.use(function (req,res,next) {
  *  2,跳转到修改信息界面
 */
 router.get('/jumpOther', (req,res,next) => {
-	res.render('admin/other_add',{
-		userInfo:req.userInfo,
-		title:'添加开支'
-	})
+	var id = req.query.id;
+	//如果id 为空则为添加,否则为修改
+
+	if(id){
+		//根据ID查询该条记录
+		Other.findOne({_id:id}).then((other) => {
+			if(other){
+				res.render('admin/other_add',{
+					userInfo:req.userInfo,
+					title:'修改开支',
+					otherInfo:other
+				})
+			}
+		});
+	}else{
+		res.render('admin/other_add',{
+			userInfo:req.userInfo,
+			title:'添加开支'
+		})
+	}
 })
 /**
- *  添加其他开支
+ *  添加和修改其他开支
  * */
 router.post('/addOther',(req,res,next) => {
 	if(req.body.otherName == '' || req.body.otherName == undefined){
@@ -40,42 +56,63 @@ router.post('/addOther',(req,res,next) => {
 		})
 		return Promise.reject();
 	}
-
-	var other = {
-		otherName:req.body.otherName,
-		travelPrice:req.body.travelPrice || 0,
-		foodPrice:req.body.foodPrice || 0,
-		otherPrice:req.body.otherPrice || 0,
-		remark:req.body.remark
-	}
-	new Other({
-		otherName:other.otherName,
-		travelPrice:other.travelPrice,
-		foodPrice:other.foodPrice,
-		otherPrice:other.otherPrice,
-		totalPrice:Number(other.travelPrice) + Number(other.foodPrice) + Number(other.otherPrice),
-		updateTime:new Date(),
-		remark:other.remark
-	})
-		.save()
-		.then((otherInfo) => {
-			if (otherInfo) {
-				res.render("admin/message",{
-					userInfo:req.userInfo,
-					message:"添加成功!",
-					url:"/other",
-					buttom:"跳转至添加开支界面"
-				})
-				return Promise.reject();
-			}else{
-				res.render("admin/message",{
-					userInfo:req.userInfo,
-					message:"添加失败！",
-					url:"/other/jumpOther",
-					buttom:"跳转至添加开支界面"
-				})
+	console.log(req.body);
+	if(req.body.id){
+		Other.update(
+			{_id:req.body.id},
+			{
+				otherName:req.body.otherName,
+				travelPrice:req.body.travelPrice || 0,
+				foodPrice:req.body.foodPrice || 0,
+				otherPrice:req.body.otherPrice || 0,
+				remark:req.body.remark
 			}
+		).then(() => {
+			res.render('admin/message', {
+				userInfo: req.userInfo,
+				message: '支出修改成功！',
+				url: '/other',
+				buttom:"跳转至支出列表"
+			});
 		})
+	}else{
+		var other = {
+			otherName:req.body.otherName,
+			travelPrice:req.body.travelPrice || 0,
+			foodPrice:req.body.foodPrice || 0,
+			otherPrice:req.body.otherPrice || 0,
+			remark:req.body.remark
+		}
+		new Other({
+			otherName:other.otherName,
+			travelPrice:other.travelPrice,
+			foodPrice:other.foodPrice,
+			otherPrice:other.otherPrice,
+			totalPrice:Number(other.travelPrice) + Number(other.foodPrice) + Number(other.otherPrice),
+			updateTime:new Date(),
+			remark:other.remark
+		})
+			.save()
+			.then((otherInfo) => {
+				if (otherInfo) {
+					res.render("admin/message",{
+						userInfo:req.userInfo,
+						message:"添加成功!",
+						url:"/other",
+						buttom:"跳转至添加开支界面"
+					})
+					return Promise.reject();
+				}else{
+					res.render("admin/message",{
+						userInfo:req.userInfo,
+						message:"添加失败！",
+						url:"/other/jumpOther",
+						buttom:"跳转至添加开支界面"
+					})
+				}
+			})
+	}
+
 })
 /**
  *  其他开支列表
@@ -153,5 +190,62 @@ router.get('/showOther',(req,res,next) => {
 			}
 		})
 })
+/**
+ *  根据姓名查询
+ * */
+router.get("/identifyQueryOther",(req,res,next) => {
+	var otherName = req.query.otherName;
+	// var isState = req.query.isState;
+	var _filter;
+	// if(isState == '' || isState == undefined){
+		_filter = {
+			otherName:{"$regex":otherName,$options:"$i"}
+		}
+	// }else{
+	// 	_filter = {
+	// 		identifyNumber:{"$regex":identifyNumber,$options:"$i"},
+	// 		isState:isState
+	// 	}
+	// }
+	//定义当前页的页数，默认为第一页   req.query.page  获取?page 的值
+	var page = Number(req.query.page || 1);
+	var limit = 5;      //每页显示的条数
+	var count=0;    //总记录数
+	var pages = 0 ;
+	var skip = (page-1)*limit;
+
+	Other.count(_filter,  (err, doc) => { // 查询总条数（用于分页）
+		if (err) {
+			console.log(err)
+		} else {
+			count = doc
+			pages = Math.ceil(count/limit);   //计算有多少页
+			page = Math.min(page,pages);      //分页最大数不能超过总页数
+			page = Math.max(page,1);          //最小控制在第一页
+		}
+	})
+	Other.find(_filter)
+		.limit(limit) // 最多显示10条
+		.sort({'_id': -1}) // 倒序
+		.exec(  (err, doc) => { // 回调
+			if (err) {
+				console.log(err)
+				console.log(1)
+			} else {
+				res.render('admin/other_list',{
+					userInfo:req.userInfo,
+					otherList:doc,
+					count:count,
+					pages:pages,
+					limit:limit,
+					page:page,
+					url:"/other",
+					otherName:otherName
+				});
+			}
+		})
+});
+
+
 
 module.exports = router;
