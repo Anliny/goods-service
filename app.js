@@ -70,6 +70,7 @@ app.set('view engine','html');
 //在开发过程中，取消缓存模板缓存
 swig.setDefaults({cache:false})
 
+
 /**
  * 根据不同的功能，划分不同的模块
  * admin    后台管理
@@ -84,6 +85,24 @@ app.use('/admin',require('./routers/admin'));
 app.use('/article',require('./routers/article'));
 app.use('/stock',require('./routers/stock'));
 app.use('/other',require('./routers/other'));
+
+//处理404
+app.get("*",(req, res) => {
+	res.render('admin/404',{
+		userInfo:req.userInfo,
+		url:"/404"
+	});
+});
+//处理500
+app.use((err, req, res, next) => {
+	// console.error(err.stack);
+	// res.status(500).send('Something broke!');
+	res.render('admin/500',{
+		userInfo:req.userInfo,
+		url:"/500"
+	});
+});
+
 
 //数据库连接
 mongoose.connect('mongodb://localhost:27017/goods',{useMongoClient:true},function (err) {
