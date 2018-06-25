@@ -85,7 +85,10 @@ app.use('/admin',require('./routers/admin'));
 app.use('/article',require('./routers/article'));
 app.use('/stock',require('./routers/stock'));
 app.use('/other',require('./routers/other'));
-
+/**
+ *  公共模块
+ */
+app.use('/common',require('./routers/common/d-blog'))
 //处理404
 app.get("*",(req, res) => {
 	res.render('admin/404',{
@@ -111,11 +114,11 @@ mongoose.connect('mongodb://localhost:27017/goods',{useMongoClient:true},functio
 	}else{
 		console.log("数据库连接成功");
 		//监听http请求
-		app.listen("8082","localhost",function (error) {
+		app.listen("8082","0.0.0.0",function (error) {
 			if(error)
 				console.log(error)
 			else
-				console.log("http://localhost:8082");
+				console.log("http://0.0.0.0:8082");
 		});
 	}
 

@@ -99,9 +99,9 @@ router.post('/user/login',function (req,res,next) {
 	console.log(req.body);
 	var userName = req.body.username;
 	var passWord = req.body.password;
-
+	console.log(userName,passWord);
 	//判断用户名是否为空
-	if(userName == 'undefined' || userName == ''){
+	if(userName == undefined || userName == ''){
 		responseDate.code = 2;
 		responseDate.message = '用户名不能为空';
 		res.json(responseDate);
@@ -109,7 +109,7 @@ router.post('/user/login',function (req,res,next) {
 	}
 
 	//判断密码是否为空
-	if(passWord == 'undefined' || passWord == ''){
+	if(passWord == undefined || passWord == ''){
 		responseDate.code = 2;
 		responseDate.message = '密码不能为空';
 		res.json(responseDate);
@@ -118,24 +118,25 @@ router.post('/user/login',function (req,res,next) {
 
 	//用户登录
 	User.findOne({username:userName,password:passWord})
-		.then(function (userInfo) {
+		.then( (userInfo) => {
 			// 如果找不到相关匹配
 			if(!userInfo){
 				responseDate.code = 2;
 				responseDate.message = '用户名或密码错误！'
+				console.log('=========================');
+				console.log(responseDate);
 				res.json(responseDate);
-				return
+			}else{
+				console.log('-------------------------');
+				console.log(userInfo)
+				//  否者则登录
+				responseDate.message = '登录成功！';
+				// responseDate.userInfo = {_id:userInfo._id, username:userInfo.username};
+				responseDate.userInfo = userInfo;
+				//发送cookie信息 到客户端
+				req.cookies.set('userInfo',JSON.stringify({_id:userInfo._id, username:userInfo.username}));
+				res.json(responseDate);
 			}
-
-			//  否者则登录
-			responseDate.message = '登录成功！';
-			responseDate.userInfo = {_id:userInfo._id, username:userInfo.username};
-
-			//发送cookie信息 到客户端
-			req.cookies.set('userInfo',JSON.stringify({_id:userInfo._id, username:userInfo.username}));
-
-			res.json(responseDate);
-			return;
 		})
 
 });

@@ -9,6 +9,7 @@ var User = require("../models/User");
 //课程操作
 var Blog = require("../models/Blog");
 
+
 //判断是否是管理员，如果不是管理员则不允许进入
 router.use(function (req,res,next) {
 	if(!req.userInfo.isAdmin){
