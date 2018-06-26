@@ -156,6 +156,7 @@ router.get('/remove',function (req,res) {
  *  修改文章
  */
 router.get('/update',function (req,res) {
+	console.log(req.query);
 	var id = req.query.id || "";
 	console.log(id);
 	var blogs = [];

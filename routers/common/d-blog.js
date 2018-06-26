@@ -10,7 +10,10 @@ var Article  = require("../../models/m_Article");
 
 //类目操作
 var Blog  = require("../../models/Blog");
-
+/**
+ *  0 成功  1，失败   2，错误   3，传参为空
+ *
+ * */
 var state = {
 	code:0,
 	msg:'成功！'
@@ -56,6 +59,29 @@ router.get('/', (req,res,next) => {
 					}
 					res.json(responseDate);
 				})
+		})
+})
+
+/** 查看文章详情  */
+router.get('/aricle',(req,res,next) => {
+	console.log(req.query);
+	if(req.query.id == undefined || req.query.id == ''){
+		const responseDate = {
+			code:3,
+			msg:'参数为空！'
+		}
+		res.json(responseDate);
+		return
+	}
+	Article.findOne({_id:req.query.id})
+		.then((doc) => {
+			console.log(doc);
+			const responseDate = {
+				code:0,
+				msg:'成功',
+				doc:doc
+			}
+			res.json(responseDate);
 		})
 })
 
